@@ -1,7 +1,7 @@
 ﻿var moment = require('moment');
 var config = require('./config');
 var sessionTable = 'session';
-var originalMysql=require('mysql');//用了两种数据库连接方式，一种是knex，另一种是原始的mysql，支持复杂 操作 
+var originalMysql=require('mysql');//用了两种数据库连接方式，一种是knex，另一种是原始的mysql ，支持复杂 操作 
 var mysql = require('knex')({
   client: 'mysql',
   connection: {
