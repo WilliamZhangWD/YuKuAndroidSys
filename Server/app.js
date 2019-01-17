@@ -7,12 +7,12 @@ var md5=require('md5-node')
 var fs=require('fs');
 
 var config = require('./config');
-var lessonConfig = require('./lesson');
-var login = require('./routes/login');
-var personalInfo = require('./routes/personalInfo');
-var userCheck = require('./routes/userCheck');
-var userPost = require('./routes/userPost');
-var userGet = require('./routes/userGet');
+// var lessonConfig = require('./lesson');
+ var login = require('./routes/login');
+// var personalInfo = require('./routes/personalInfo');
+// var userCheck = require('./routes/userCheck');
+// var userPost = require('./routes/userPost');
+// var userGet = require('./routes/userGet');
 
 var app = express();
 var port = config.port;//监听端口
@@ -39,13 +39,36 @@ app.all('*', function(req, res, next) {
     next();
     });
 
-app.get('/', function (req, res) {
+    //使用postman发送post提醒，数据放在body里，header里Content-Type：application/x-www-form-urlencoded，从x-www-form-urlencoded发送
+// app.post('/try', function (req, res) {
+//     console.log(req.body);
+//     res.send("你好，这里是语酷Android！cool！");
+// });
+
+
+// await 关键字后的函数
+var Delay_Time = function(ms) {
+    return new Promise(function(resolve) {
+        setTimeout(resolve, 1000)
+    } )
+}
+// async 函数
+var Delay_Print = async function(ms) {
+    await Delay_Time(ms)
+    return new Promise(function(resolve, reject) {
+        resolve("End");
+    })
+}
+
+
+app.get('/try', async function (req, res) {
+    
     res.send("你好，这里是语酷Android！cool！");
 });
 /*
 以下路由重写
 */
-//app.use('/api/user/login', login);//登录
+app.use('/api/user/login', login);//登录
 //app.use('/api/user/personal/', personalInfo);//用户信息
 //app.use('/api/user/userCheck/', userCheck);//用户审题
 //app.use('/api/user/userPost', userPost);//用户提交

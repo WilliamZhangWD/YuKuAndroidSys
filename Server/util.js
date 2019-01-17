@@ -1,19 +1,9 @@
 ﻿var moment = require('moment');
 var config = require('./config');
 var sessionTable = 'session';
-var originalMysql=require('mysql');//用了两种数据库连接方式，一种是knex，另一种是原始的mysql ，支持复杂 操作 
-var mysql = require('knex')({
-  client: 'mysql',
-  connection: {
-    host: config.mysql.host,
-    port: config.mysql.port,
-    user: config.mysql.user,
-    password: config.mysql.pass,
-    database: config.mysql.db,
-    charset: config.mysql.char
-  }
-});
-var pool=originalMysql.createPool({
+//用了两种数据库连接方式，一种是knex,适合小操作，方便简单，另一种是原始的mysql ，适合复杂操作 
+var mysqlTool=require('mysql');//第一种mysql方法  
+var pool=mysqlTool.createPool({
   connectionLimit : 50,
   multipleStatements : true,
   host: config.mysql.host,
@@ -23,8 +13,8 @@ var pool=originalMysql.createPool({
   database: config.mysql.db,
   charset: config.mysql.char
 });
-var mysql2=(sql)=>{
-       return new Promise(function(resolve,reject){
+var mysql=(sql)=>{
+       return   new Promise(function(resolve,reject){
            pool.getConnection(function(err,connection){
               if(err){
                 reject(err);
@@ -42,7 +32,18 @@ var mysql2=(sql)=>{
        });
     };
 
-
+var knex = require('knex')({//第二种mysql方法
+  client: 'mysql',
+  connection: {
+    host: config.mysql.host,
+    port: config.mysql.port,
+    user: config.mysql.user,
+    password: config.mysql.pass,
+    database: config.mysql.db,
+    charset: config.mysql.char
+  }
+});
+    
 var loginCheckMiddleware = function (req, res, next) {
   //console.log("loginCheckMiddleware_req headers");
   //console.log(req.headers)
@@ -105,8 +106,9 @@ function only(obj, keys) {
 };
 
 module.exports = {
-  mysql: mysql,
+  knex: knex,
+  mysql:mysql,
   loginCheckMiddleware: loginCheckMiddleware,
-  only,
-  mysqlTool2:mysql2
+  only
+  
 };
